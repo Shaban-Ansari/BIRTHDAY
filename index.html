@@ -25,8 +25,10 @@ body{
   background:var(--bg);
   color:var(--text);
   overflow:hidden;
-  transition:.5s;
+  transition:.4s ease;
 }
+
+/* ---------- LAYOUT ---------- */
 .screen{
   position:absolute;
   inset:0;
@@ -36,20 +38,33 @@ body{
   flex-direction:column;
   padding:20px;
 }
-.screen.active{display:flex;}
+.screen.active{display:flex}
+
 .card{
   background:var(--card);
-  padding:30px;
+  padding:clamp(22px,5vw,32px);
   border-radius:22px;
   max-width:460px;
+  width:100%;
   text-align:center;
-  box-shadow:0 25px 60px rgba(0,0,0,.25);
-  animation:fadeUp 1s ease;
+  box-shadow:0 20px 50px rgba(0,0,0,.22);
+  animation:fadeUp .9s ease;
 }
+
 @keyframes fadeUp{
-  from{opacity:0;transform:translateY(40px)}
-  to{opacity:1}
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:none}
 }
+
+h2,h3{
+  font-size:clamp(20px,5vw,26px);
+}
+p{
+  font-size:clamp(14px,4vw,16px);
+  line-height:1.6;
+}
+
+/* ---------- BUTTONS ---------- */
 button{
   padding:14px 28px;
   border:none;
@@ -58,6 +73,7 @@ button{
   color:#fff;
   font-size:16px;
   cursor:pointer;
+  margin-top:18px;
 }
 .toggle{
   position:fixed;
@@ -69,56 +85,57 @@ button{
   border-radius:20px;
   cursor:pointer;
   z-index:10;
+  font-size:14px;
 }
+
+/* ---------- COUNTRY ---------- */
 .country{
-  margin:10px;
-  padding:14px 20px;
+  margin:10px 0;
+  padding:14px 18px;
   border-radius:22px;
   background:#ffd3e6;
   cursor:pointer;
   font-weight:500;
+  font-size:16px;
 }
-.country:hover{background:var(--accent);color:#fff}
+.country:hover{
+  background:var(--accent);
+  color:#fff;
+}
 
-/* ✈️ PLANE */
+/* ---------- PLANE ---------- */
 .plane{
   position:absolute;
-  font-size:64px;
+  font-size:60px;
   left:-80px;
-  top:40%;
+  top:42%;
   animation:fly 2.8s ease-out forwards;
 }
 @keyframes fly{
-  70%{transform:translateX(80vw) translateY(-20px)}
+  70%{transform:translateX(80vw) translateY(-18px)}
   85%{transform:translateX(90vw) translateY(0) rotate(6deg)}
-  100%{transform:translateX(95vw) translateY(10px) rotate(0deg)}
+  100%{transform:translateX(95vw) translateY(10px)}
 }
-
-/* 🛬 BOUNCE */
-.landed{
-  animation:bounce .6s ease;
-}
+.landed{animation:bounce .5s ease}
 @keyframes bounce{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-  100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
 }
 
-/* 💨 SMOKE */
+/* ---------- SMOKE ---------- */
 .smoke{
   position:absolute;
-  bottom:30%;
+  bottom:38%;
   font-size:26px;
   opacity:0;
   animation:smoke 1.4s ease forwards;
 }
 @keyframes smoke{
   0%{opacity:0;transform:translateY(0) scale(.8)}
-  40%{opacity:.7}
-  100%{opacity:0;transform:translateY(-30px) scale(1.6)}
+  40%{opacity:.6}
+  100%{opacity:0;transform:translateY(-30px) scale(1.5)}
 }
 
-/* 🕯️ */
+/* ---------- CANDLE ---------- */
 .candle{
   width:90px;height:150px;
   background:#ffd1e8;
@@ -137,6 +154,18 @@ button{
 }
 @keyframes flicker{50%{transform:scale(.85)}}
 .hidden{display:none}
+
+/* ---------- ROSE PETALS ---------- */
+.petal{
+  position:fixed;
+  top:-40px;
+  font-size:22px;
+  animation:fall linear forwards;
+  pointer-events:none;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg)}
+}
 </style>
 </head>
 
@@ -200,32 +229,42 @@ function go(n){
 
 let selectedNote="";
 const notes={
-  india:`<b>Mehvish</b> 💖<br><br>Janmadin Mubarak 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`,
-  saudi:`<b>Mehvish</b> 💖<br><br>عيد ميلاد سعيد 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`,
-  japan:`<b>Mehvish</b> 💖<br><br>お誕生日おめでとう 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`,
-  korea:`<b>Mehvish</b> 💖<br><br>생일 축하해요 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`
+  india:`<b>Mehvish</b> 💖<br><br>Janmadin Mubarak 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel a little magical 💖🌹`,
+  saudi:`<b>Mehvish</b> 💖<br><br>عيد ميلاد سعيد 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel a little magical 💖🌹`,
+  japan:`<b>Mehvish</b> 💖<br><br>お誕生日おめでとう 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel a little magical 💖🌹`,
+  korea:`<b>Mehvish</b> 💖<br><br>생일 축하해요 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel a little magical 💖🌹`
 };
 
 function travel(c){
   selectedNote=notes[c];
   go(3);
 
-  const plane=document.getElementById("plane");
-  const smoke=document.getElementById("smoke");
-
   setTimeout(()=>{
-    plane.classList.add("landed");
-    smoke.style.opacity=1;
-  },2300);
+    document.getElementById("plane").classList.add("landed");
+    document.getElementById("smoke").style.opacity=1;
+  },2200);
 
-  setTimeout(()=>go(4),3200);
+  setTimeout(()=>go(4),3100);
 }
 
 function blow(){
   document.getElementById("flame").classList.add("hidden");
-  confetti({particleCount:200,spread:140});
+  confetti({particleCount:160,spread:120});
   document.getElementById("note").innerHTML=selectedNote;
-  setTimeout(()=>go(5),800);
+  go(5);
+  petals();
+}
+
+function petals(){
+  for(let i=0;i<18;i++){
+    let p=document.createElement("div");
+    p.className="petal";
+    p.innerHTML="🌹";
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=6+Math.random()*4+"s";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),10000);
+  }
 }
 </script>
 

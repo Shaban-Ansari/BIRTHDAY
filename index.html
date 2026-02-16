@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday Mehvish 💖</title>
+<title>Happy Birthday 💖</title>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -41,14 +41,14 @@ body{
   background:var(--card);
   padding:30px;
   border-radius:22px;
-  max-width:440px;
+  max-width:460px;
   text-align:center;
   box-shadow:0 25px 60px rgba(0,0,0,.25);
-  animation:fadeUp 1.2s ease;
+  animation:fadeUp 1s ease;
 }
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(40px)}
-  to{opacity:1;transform:none}
+  to{opacity:1}
 }
 button{
   padding:14px 28px;
@@ -70,24 +70,55 @@ button{
   cursor:pointer;
   z-index:10;
 }
-.cinematic{
-  text-align:center;
-  animation:zoom 3s ease forwards;
-}
-@keyframes zoom{
-  from{transform:scale(1.1);opacity:0}
-  to{transform:scale(1);opacity:1}
-}
 .country{
   margin:10px;
-  padding:12px 18px;
-  border-radius:20px;
+  padding:14px 20px;
+  border-radius:22px;
   background:#ffd3e6;
   cursor:pointer;
   font-weight:500;
-  transition:.3s;
 }
 .country:hover{background:var(--accent);color:#fff}
+
+/* ✈️ PLANE */
+.plane{
+  position:absolute;
+  font-size:64px;
+  left:-80px;
+  top:40%;
+  animation:fly 2.8s ease-out forwards;
+}
+@keyframes fly{
+  70%{transform:translateX(80vw) translateY(-20px)}
+  85%{transform:translateX(90vw) translateY(0) rotate(6deg)}
+  100%{transform:translateX(95vw) translateY(10px) rotate(0deg)}
+}
+
+/* 🛬 BOUNCE */
+.landed{
+  animation:bounce .6s ease;
+}
+@keyframes bounce{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+  100%{transform:translateY(0)}
+}
+
+/* 💨 SMOKE */
+.smoke{
+  position:absolute;
+  bottom:30%;
+  font-size:26px;
+  opacity:0;
+  animation:smoke 1.4s ease forwards;
+}
+@keyframes smoke{
+  0%{opacity:0;transform:translateY(0) scale(.8)}
+  40%{opacity:.7}
+  100%{opacity:0;transform:translateY(-30px) scale(1.6)}
+}
+
+/* 🕯️ */
 .candle{
   width:90px;height:150px;
   background:#ffd1e8;
@@ -105,13 +136,6 @@ button{
   animation:flicker .15s infinite;
 }
 @keyframes flicker{50%{transform:scale(.85)}}
-.rose{
-  position:fixed;
-  top:-40px;
-  font-size:24px;
-  animation:fall linear infinite;
-}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
 .hidden{display:none}
 </style>
 </head>
@@ -122,47 +146,47 @@ button{
 
 <!-- INTRO -->
 <div class="screen active">
-  <div class="cinematic">
-    <h1 id="type"></h1>
-    <p style="opacity:.7">A small journey made with care ✨</p>
-    <button onclick="go(2)">Tap to Begin</button>
+  <div class="card">
+    <h2>Welcome ✨</h2>
+    <p>A small journey made with care</p>
+    <button onclick="go(2)">Begin</button>
   </div>
 </div>
 
-<!-- GLOBE -->
+<!-- COUNTRY -->
 <div class="screen" id="s2">
   <div class="card">
     <h3>Choose a country 🌍</h3>
-    <div class="country" onclick="next()">🇮🇳 India</div>
-    <div class="country" onclick="next()">🇫🇷 France</div>
-    <div class="country" onclick="next()">🇯🇵 Japan</div>
-    <div class="country" onclick="next()">🇪🇸 Spain</div>
-    <div class="country" onclick="next()">🇦🇪 Arabic</div>
+    <div class="country" onclick="travel('india')">🇮🇳 India</div>
+    <div class="country" onclick="travel('saudi')">🇸🇦 Saudi Arabia</div>
+    <div class="country" onclick="travel('japan')">🇯🇵 Japan</div>
+    <div class="country" onclick="travel('korea')">🇰🇷 South Korea</div>
   </div>
 </div>
 
-<!-- CANDLE -->
+<!-- PLANE -->
 <div class="screen" id="s3">
+  <div class="plane" id="plane">✈️</div>
+  <div class="smoke" id="smoke">☁️ ☁️ ☁️</div>
+  <p>Landing… 🛬</p>
+</div>
+
+<!-- CANDLE -->
+<div class="screen" id="s4">
   <div class="card">
     <div class="candle">
       <div class="flame" id="flame"></div>
     </div>
-    <p>Blow into the mic 🎤<br><small>(or tap if mic not allowed)</small></p>
+    <p>Blow the candle 🎤<br><small>(or tap)</small></p>
     <button onclick="blow()">Tap Instead</button>
   </div>
 </div>
 
 <!-- FINAL -->
-<div class="screen" id="s4">
+<div class="screen" id="s5">
   <div class="card">
-    <h2>🎉 Birthday Level Completed 🎉</h2>
-    <p>
-      Happy Birthday 🌙✨<br><br>
-      If birthdays were wishes, I’d wish you soft mornings,
-      warm laughter, and moments that feel like flowers 🌸 falling slowly.<br><br>
-      May chocolates 🍫 be sweet, smiles be endless,
-      and today feel a little magical 💖🌹
-    </p>
+    <h2>🎉 Happy Birthday 🎉</h2>
+    <p id="note"></p>
     <p style="font-size:22px">🌸🍫🌹🎈💖</p>
   </div>
 </div>
@@ -172,54 +196,37 @@ function toggleTheme(){document.body.classList.toggle("dark")}
 function go(n){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n)?.classList.add("active");
-  confetti({particleCount:120,spread:100});
 }
-function next(){
-  rain();
+
+let selectedNote="";
+const notes={
+  india:`<b>Mehvish</b> 💖<br><br>Janmadin Mubarak 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`,
+  saudi:`<b>Mehvish</b> 💖<br><br>عيد ميلاد سعيد 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`,
+  japan:`<b>Mehvish</b> 💖<br><br>お誕生日おめでとう 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`,
+  korea:`<b>Mehvish</b> 💖<br><br>생일 축하해요 🌸<br>May chocolates 🍫 be sweet, smiles be endless, and today feel magical 💖🌹`
+};
+
+function travel(c){
+  selectedNote=notes[c];
   go(3);
+
+  const plane=document.getElementById("plane");
+  const smoke=document.getElementById("smoke");
+
+  setTimeout(()=>{
+    plane.classList.add("landed");
+    smoke.style.opacity=1;
+  },2300);
+
+  setTimeout(()=>go(4),3200);
 }
-function rain(){
-  for(let i=0;i<15;i++){
-    let r=document.createElement("div");
-    r.className="rose";
-    r.innerHTML="🌹";
-    r.style.left=Math.random()*100+"vw";
-    r.style.animationDuration=4+Math.random()*4+"s";
-    document.body.appendChild(r);
-    setTimeout(()=>r.remove(),8000);
-  }
-}
+
 function blow(){
   document.getElementById("flame").classList.add("hidden");
   confetti({particleCount:200,spread:140});
-  setTimeout(()=>go(4),900);
+  document.getElementById("note").innerHTML=selectedNote;
+  setTimeout(()=>go(5),800);
 }
-
-/* MIC BLOW DETECTION */
-navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
-  const ctx=new AudioContext();
-  const mic=ctx.createMediaStreamSource(stream);
-  const analyser=ctx.createAnalyser();
-  mic.connect(analyser);
-  const data=new Uint8Array(analyser.frequencyBinCount);
-  function detect(){
-    analyser.getByteFrequencyData(data);
-    let volume=data.reduce((a,b)=>a+b)/data.length;
-    if(volume>45){blow()}
-    requestAnimationFrame(detect);
-  }
-  detect();
-}).catch(()=>{});
-
-/* TYPE NAME */
-let i=0,txt="Happy Birthday Mehvish 💖";
-function type(){
-  if(i<txt.length){
-    document.getElementById("type").innerHTML+=txt[i++];
-    setTimeout(type,100);
-  }
-}
-type();
 </script>
 
 </body>

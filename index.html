@@ -211,7 +211,7 @@ button{
   <div class="card">
     <h2>🎉 Happy Birthday 🎉</h2>
     <p id="note"></p>
-    <p style="font-size:22px">🌸🍫🌹🎈💖</p>
+    <p style="font-size:22px">🌸🍫🌻🎈💖</p>
     <button class="back" onclick="back()">⬅ Back</button>
   </div>
 </div>
@@ -258,12 +258,12 @@ function back(){
   go(2);
 }
 
-/* 🌹 CONTINUOUS PETALS */
+/* 🌻 CONTINUOUS PETALS */
 function startPetals(){
   petalInterval=setInterval(()=>{
     let p=document.createElement("div");
     p.className="petal";
-    p.innerHTML="🌹";
+    p.innerHTML="🌻🌻";
     p.style.left=Math.random()*100+"vw";
     p.style.animationDuration=6+Math.random()*4+"s";
     document.body.appendChild(p);
